@@ -64,4 +64,5 @@ async def test_priority_encoder(dut):
         if dut.uo_out.value != expected:
             raise TestFailure(f"Test failed: Input={inp:016b}, Expected={expected}, Got={dut.uo_out.value}")
         else:
-            print(f"PASS: Input={inp:016b}, Output={dut.uo_out.value}")
+            print(f"✅ PASS: Input={inp:016b}, Output={dut.uo_out.value}")
+
