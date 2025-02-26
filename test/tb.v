@@ -50,40 +50,41 @@
 
 // endmodule
 
+`default_nettype none
+`timescale 1ns / 1ps
 
-`timescale 1ns/1ps
-module testbench;
-    reg [7:0] ui_in;
-    reg [7:0] uio_in;
-    wire [7:0] uo_out;
+module tb ();
 
-    // Instantiate the priority encoder
-    tt_um_priority_encoder uut (
-        .ui_in(ui_in),
-        .uo_out(uo_out),
-        .uio_in(uio_in),
-        .uio_out(),
-        .uio_oe(),
-        .ena(1'b1),
-        .clk(1'b0),
-        .rst_n(1'b1)
-    );
+  // Dump the signals to a VCD file
+  initial begin
+    $dumpfile("tb.vcd");
+    $dumpvars(0, tb);
+    #1;
+  end
 
-    initial begin
-        // Test Cases
-        ui_in = 8'b00101010; uio_in = 8'b11110001; #10; // Expected Output: 13
-        $display("Input: %b%b, Output: %d", ui_in, uio_in, uo_out);
+  // Wire up the inputs and outputs:
+  reg [7:0] ui_in;
+  reg [7:0] uio_in;
+  wire [7:0] uo_out;
+  wire [7:0] uio_out;
+  wire [7:0] uio_oe;
+  reg ena;
+  reg clk;
+  reg rst_n;
 
-        ui_in = 8'b00000000; uio_in = 8'b00000001; #10; // Expected Output: 0
-        $display("Input: %b%b, Output: %d", ui_in, uio_in, uo_out);
+  // Instantiate the priority encoder module
+  tt_um_priority_encoder user_project (
+      .ui_in  (ui_in),
+      .uo_out (uo_out),
+      .uio_in (uio_in),
+      .uio_out(uio_out),
+      .uio_oe (uio_oe),
+      .ena    (ena),
+      .clk    (clk),
+      .rst_n  (rst_n)
+  );
 
-        ui_in = 8'b00000000; uio_in = 8'b00000000; #10; // Expected Output: 1111_0000
-        $display("Input: %b%b, Output: %b", ui_in, uio_in, uo_out);
-
-        ui_in = 8'b10000000; uio_in = 8'b00000000; #10; // Expected Output: 15
-        $display("Input: %b%b, Output: %d", ui_in, uio_in, uo_out);
-
-        $stop;
+endmodule
     end
 endmodule
 
