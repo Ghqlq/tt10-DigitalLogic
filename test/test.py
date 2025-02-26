@@ -39,6 +39,7 @@
 
 #     # Keep testing the module by changing the input values, waiting for
 #     # one or more clock cycles, and asserting the expected output values.
+
 import cocotb
 from cocotb.triggers import Timer
 
@@ -46,7 +47,6 @@ from cocotb.triggers import Timer
 async def test_priority_encoder(dut):
     dut._log.info("Starting test")
     dut.ena.value = 1
-    dut.rst_n.value = 1
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
@@ -55,7 +55,7 @@ async def test_priority_encoder(dut):
         (0b00000000, 0b00000001, 0),   # Lowest bit set
         (0b00010000, 0b00000000, 4),   # Middle bit set
         (0b00000001, 0b10000000, 15),  # Highest from uio_in
-        (0b00000000, 0b00000000, 240), # No bits set
+        (0b00000000, 0b00000000, 0b11110000), # No bits set case
     ]
 
     for ui, uio, expected in test_cases:
@@ -63,4 +63,3 @@ async def test_priority_encoder(dut):
         dut.uio_in.value = uio
         await Timer(2, units="ns")
         assert dut.uo_out.value == expected, f"Expected {expected}, got {int(dut.uo_out.value)}"
-
